@@ -40,26 +40,19 @@ public class Board extends JPanel{
 		public static final Color COLOR_SIXTYFOUR  = new Color(246, 94, 59);
 		public static final Color COLOR_ONE_HUNDRED_TWENTY_EIGHT  = new Color(237, 207, 114);
 		public static final Color COLOR_TWO_HUNDRED_FIFTY_SIX  = new Color(237,204, 97);
-		public static final Color COLOR_FIVE_HUNDRED_TWELVE  = new Color(205, 193, 160);
-		public static final Color COLOR_ONE_THOUSAND_TWENTY_FOUR  = new Color(205, 193, 160);
-		public static final Color COLOR_TWO_THOUSAND_FORTY_EIGHT  = new Color(205, 193, 160);
+		public static final Color COLOR_FIVE_HUNDRED_TWELVE  = new Color(245, 193, 160);
+		public static final Color COLOR_ONE_THOUSAND_TWENTY_FOUR  = new Color(237, 245, 160);
+		public static final Color COLOR_TWO_THOUSAND_FORTY_EIGHT  = new Color(255, 125, 125);
 		
-		private int grid[] = new int[4 * 4];
-		
-		
+		private int grid[];
 		
 		
-			public Board() { 
+			public Board(int grid[]) { 
 				setPreferredSize(new Dimension(WIDTH,HEIGHT));
-				
-				grid[0 + 0 * 4] = 2;
-				grid[0 + 1 * 4] = 4;
-				grid[0 + 2 * 4] = 8;
-				grid[0 + 3 * 4] = 16;
+				this.grid = grid;
 			}
 			
 		
-			
 			public void paint(Graphics g) { 
 				Graphics2D g2 = (Graphics2D)g; 
 				showGrid(g2);
@@ -76,11 +69,15 @@ public class Board extends JPanel{
 						}
 					g2.drawLine(0, y * CELL_HEIGHT , WIDTH, y * CELL_HEIGHT);
 				}
+				
+		
 			}
 			
 			
 			private void showGrid(Graphics2D g2)
 			{ 
+				
+				g2.setColor(BG_COLOR);
 				
 				for(int y=0;y<totalCellsY();y++) { 
 					for(int x=0;x<totalCellsX();x++) { 
@@ -145,6 +142,7 @@ public class Board extends JPanel{
 						
 						g2.fillRect(x * CELL_WIDTH, y * CELL_HEIGHT,CELL_WIDTH, CELL_HEIGHT);
 						drawNumbers(x,y,g2);
+						
 						g2.setColor(BG_COLOR);
 					}
 				}
@@ -157,6 +155,7 @@ public class Board extends JPanel{
 				String cell_data = "";
 				int xOffset = 0,yOffset = 0;
 				Font font = null;
+				
 				
 				switch(grid[x + y * totalCellsX()]) { 
 				
@@ -197,36 +196,53 @@ public class Board extends JPanel{
 				case THIRTY_TWO:
 
 					cell_data = labels[4];
-					
+					xOffset = 10;
+					yOffset = 75;
+					font = new Font("Verdana",Font.BOLD,55);
 					break;
 					
 				case SIXTYFOUR:
-
 					cell_data = labels[5];
-					
+					xOffset = 10;
+					yOffset = 75;
+					font = new Font("Verdana",Font.BOLD,55);
 					break;
 					
 				case ONE_HUNDRED_TWENTY_EIGHT:
 					
-					cell_data = labels[6];					
+					cell_data = labels[6];	
+					xOffset = 10;
+					yOffset = 65;
+					font = new Font("Verdana",Font.BOLD,35);
 					
 					break;
 				case TWO_HUNDRED_FIFTY_SIX:
 
 					cell_data = labels[7];
+					xOffset = 10;
+					yOffset = 65;
+					font = new Font("Verdana",Font.BOLD,35);
 					break;
 					
 				case FIVE_HUNDRED_TWELVE:
 
 					cell_data = labels[8];
+					xOffset = 10;
+					yOffset = 65;
+					font = new Font("Verdana",Font.BOLD,35);
 					break;
 					
 				case ONE_THOUSAND_TWENTY_FOUR:
 					cell_data = labels[9];
-						
+					xOffset = 6;
+					yOffset = 65;
+					font = new Font("Verdana",Font.BOLD,30);
 					break;
 				case TWO_THOUSAND_FORTY_EIGHT:
 					cell_data = labels[10];
+					xOffset = 15;
+					yOffset = 65;
+					font = new Font("Verdana",Font.BOLD,25);
 					break;
 				}
 				
@@ -238,9 +254,17 @@ public class Board extends JPanel{
 			}
 				
 			public void setCellState(int x,int y,int value) { 
-				 grid[x + y * totalCellsX()] = value;
+				if(canModify())grid[x + y * totalCellsX()] = value;
 			}
 			
+			private boolean canModify() { 
+				for(int i=0;i<grid.length;i++) { 
+					 if(grid[i] == GameLogic.EMPTY_CASE) {
+						  return true;
+					 }
+				}
+				return false;
+			}
 			
 			public int totalCellsX() { 
 				return WIDTH / CELL_WIDTH;
